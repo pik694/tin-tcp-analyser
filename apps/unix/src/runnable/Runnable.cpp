@@ -4,13 +4,13 @@
 
 #include <iostream>
 #include <fstream>
-#include "Program.h"
-using namespace program;
+#include "Runnable.h"
+using namespace tcp_analyser::runnable;
 
 void GetVersionProgram::run()
 {
-//    std::cout << "Program version : " << PROGRAM_VERSION_MAJOR << "." << PROGRAM_VERSION_MINOR << std::endl;
-    ProgramDecorator::run();
+//    std::cout << "Runnable version : " << PROGRAM_VERSION_MAJOR << "." << PROGRAM_VERSION_MINOR << std::endl;
+    RunnableDecorator::run();
 }
 
 void HelpProgram::run()
@@ -23,11 +23,11 @@ void HelpProgram::run()
         manual.close();
     }
 
-    ProgramDecorator::run();
+    RunnableDecorator::run();
 }
 
 void ErrorInfoProgram::run()
 {
     std::cerr << errorMessage_ << std::endl;
-    ProgramDecorator::run();
+    RunnableDecorator::run();
 }
