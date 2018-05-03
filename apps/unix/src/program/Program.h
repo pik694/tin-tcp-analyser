@@ -9,10 +9,16 @@
 
 namespace program
 {
+
+    enum class ExecutionMode_E
+    {
+        SERVER = 1,
+        CLIENT = 2
+    };
+
     class Program
     {
     public:
-        Program() = default;
         virtual ~Program() = default;
 
         virtual void run() = 0;
