@@ -1,5 +1,5 @@
 
-find_package(Boost 1.60.0 REQUIRED COMPONENTS unit_test_framework)
+find_package(Boost 1.66 REQUIRED COMPONENTS unit_test_framework)
 
 file(GLOB_RECURSE SOURCES "*.cpp")
 
