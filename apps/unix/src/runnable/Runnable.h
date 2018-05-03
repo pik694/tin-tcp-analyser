@@ -8,13 +8,17 @@
 #include <boost/program_options.hpp>
 
 namespace tcp_analyser::runnable {
+
+    enum class ExecutionMode_E {
+        SERVER = 1,
+        CLIENT = 2
+    };
+
     class Runnable {
     public:
-        Runnable() = default;
-
         virtual ~Runnable() = default;
 
-        virtual void run() = 0;
+        virtual void run(){}
 
     };
 

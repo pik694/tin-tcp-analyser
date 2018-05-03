@@ -12,7 +12,7 @@ namespace tcp_analyser::runnable::client {
 
     class Client : public Runnable{
     public:
-        Client(std::string&& hostname, uint16_t port);
+        Client(std::string& hostname, uint16_t port);
 
 
 

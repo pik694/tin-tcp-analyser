@@ -9,6 +9,8 @@
 
 namespace tcp_analyser::runnable::server {
     class Server : public Runnable{
+    public:
+        Server(uint16_t port) {}
 
     };
 }

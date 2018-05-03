@@ -1,10 +1,12 @@
 #include <iostream>
-#include <runnable/client/Client.hpp>
+#include <runnable/program_initialization/ProgramInitializer.h>
 
-int main() {
-    std::cout << "Hello, World!" << std::endl;
+int main(int argc, const char **argv) {
+    tcp_analyser::runnable::program_initialization::ProgramInitializer programInitializer (argc, argv);
 
-    tcp_analyser::runnable::client::Client client ("localhost", 6969);
+    auto program = programInitializer.getProgram();
+
+    program->run();
 
     return 0;
 }
