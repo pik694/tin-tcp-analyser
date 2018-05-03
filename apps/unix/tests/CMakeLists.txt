@@ -1,6 +1,3 @@
-
-find_package(Boost 1.66 REQUIRED COMPONENTS unit_test_framework)
-
 file(GLOB_RECURSE SOURCES "*.cpp")
 
 add_executable(unit_tests ${SOURCES})
