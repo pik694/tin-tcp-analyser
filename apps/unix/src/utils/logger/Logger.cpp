@@ -10,6 +10,11 @@ using namespace tcp_analyser::utils::logger;
 using namespace tcp_analyser::utils::logger::log;
 
 Logger* Logger::instance_ = nullptr;
+bool Logger::work_ = false;
+bool Logger::shouldFinish_ = false;
+
+std::mutex mutex_;
+std::condition_variable conditionVariable_;
 
 Logger &Logger::getInstance()
 {
@@ -22,12 +27,27 @@ Logger &Logger::getInstance()
 
 void Logger::log()
 {
+    while( work_ )
+    {
+        std::unique_lock<std::mutex> guard( mutex_ );
+        conditionVariable_.wait( guard, []{ return !logsQueue_.empty(); } );
 
+        logsQueue_.front()->show();
+        logsQueue_.pop();
+        work_ = !( shouldFinish_ && logsQueue_.empty() );
+    }
+}
+
+void Logger::close()
+{
+    shouldFinish_ = true;
 }
 
 void Logger::add( const std::string &log, LogLevel level )
 {
-
+    std::unique_lock< std::mutex > guard( mutex_ );
+    logsQueue_.emplace( LogFactory::getInstance().getLog( log, level ) );
+    conditionVariable_.notify_all();
 }
 
 void Logger::add( std::exception &e )
@@ -43,7 +63,3 @@ Logger::~Logger()
     instance_ = nullptr;
 }
 
-void log( const std::string &log, LogLevel level )
-{
-    //TODO
-}
