@@ -12,21 +12,13 @@ using tcp_analyser::runnable::client::Client;
 
 BOOST_AUTO_TEST_SUITE(client_test)
 
-//    BOOST_AUTO_TEST_CASE(cannot_connect) {
-//
-//        std::string hostname = "localhost";
-//
-//        Client client(hostname, 6969);
-//
-//        BOOST_REQUIRE_THROW(client.run(), std::runtime_error);
-//
-//    }
+    BOOST_AUTO_TEST_CASE(cannot_connect) {
 
-    BOOST_AUTO_TEST_CASE(playground) {
         std::string hostname = "localhost";
+
         Client client(hostname, 6969);
 
-        client.run();
+        BOOST_REQUIRE_THROW(client.run(), std::runtime_error);
 
     }
 

@@ -2,72 +2,91 @@
 // Created by Piotr Żelazko on 03.05.2018.
 //
 
-#include <iostream>
-#include <thread>
-#include <utils/Logger.hpp>
 #include "Client.hpp"
+#include <boost/bind.hpp>
+#include <boost/thread.hpp>
+#include <iostream>
 
 using boost::asio::ip::tcp;
-using tcp_analyser::utils::Logger;
+
 
 tcp_analyser::runnable::client::Client::Client(std::string &hostname, uint16_t port) :
-        hostname_(hostname),
-        port_(port) {
+        context_(),
+        socket_(context_) {
 
+    tcp::resolver resolver(context_);
+    auto endpoints = resolver.resolve(hostname, std::to_string(port));
+
+    boost::asio::async_connect(
+            socket_,
+            endpoints,
+            boost::bind(&Client::handleConnect, this, boost::asio::placeholders::error)
+    );
 }
 
 void tcp_analyser::runnable::client::Client::run() {
-    //TODO: think how to write this code
-    //TODO: do not make it difficult ... KISS, it is just one app
 
-//    stream_ = std::make_unique<tcp::iostream>(hostname_, std::to_string(port_));
-//
-//    if (!*stream_) {
-//        throw std::runtime_error(stream_->error().message());
-//    }
+    boost::thread_group workers;
 
-    std::thread sender (&Client::sendMessages, this);
+    for (int i = 0; i < 2; ++i)
+        workers.create_thread(
+                boost::bind(&boost::asio::io_context::run, &context_)
+        );
 
-    std::this_thread::sleep_for(std::chrono::seconds(2));
+    std::cout << "Press any key to exit\n";
+    std::cin.get();
 
+    boost::asio::post(context_, boost::bind(&Client::close, this));
 
-    sendMessageAsync("message");
+    workers.join_all();
+}
 
-    std::this_thread::sleep_for(std::chrono::seconds(2));
-    end_ = true;
-    cv_.notify_all();
+void tcp_analyser::runnable::client::Client::handleConnect(const boost::system::error_code &error) {
+    if (!error) {
+        boost::asio::async_read(
+                socket_,
+                boost::asio::buffer(&messageLength_, sizeof(messageLength_)),
+                boost::bind(&Client::handleReadHeader, this, boost::asio::placeholders::error)
+        );
+    }
+}
 
-    sender.join();
+void tcp_analyser::runnable::client::Client::handleReadHeader(const boost::system::error_code &error) {
+    //TODO: logger
+    if (!error && messageLength_ < MAX_MESSAGE_LENGTH) {
+
+        boost::asio::async_read(
+                socket_,
+                boost::asio::buffer(message_, messageLength_),
+                boost::bind(&Client::handleReadMessage, this, boost::asio::placeholders::error)
+        );
+
+    } else {
+        boost::asio::post(context_, boost::bind(&Client::close, this));
+    }
 
 }
 
-void tcp_analyser::runnable::client::Client::sendMessageAsync(const std::string &message) {
+void tcp_analyser::runnable::client::Client::handleReadMessage(const boost::system::error_code &error) {
+    //TODO: logger
+    if (!error){
+        //Logger
 
-    {
-        std::unique_lock<std::mutex> lock(outQueueMutex_);
-        outQueue_.emplace(message);
+        std::cout.write(message_, messageLength_);
+
+        boost::asio::async_read(
+                socket_,
+                boost::asio::buffer(&messageLength_, sizeof(messageLength_)),
+                boost::bind(&Client::handleReadHeader, this, boost::asio::placeholders::error)
+        );
     }
-
-    cv_.notify_one();
+    else{
+        boost::asio::post(context_, boost::bind(&Client::close, this));
+    }
 }
 
-void tcp_analyser::runnable::client::Client::sendMessages() {
-
-    while (true) {
-        std::string message;
-        {
-            std::unique_lock<std::mutex> lock(outQueueMutex_);
-            cv_.wait(lock, [this] { return !(this->outQueue_.empty()) || end_; });
-            if (end_)
-                break;
-
-            message = outQueue_.front();
-            outQueue_.pop();
-        }
-
-        std::cout << "Message: " <<  message << std::endl;
-    }
-
+void tcp_analyser::runnable::client::Client::close() {
+    socket_.close();
 }
 
 

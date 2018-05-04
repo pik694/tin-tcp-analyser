@@ -6,7 +6,7 @@ if (UNIX AND NOT APPLE)
     set(CMAKE_CXX_FLAGS -pthread)
 endif ()
 
-find_package(Boost 1.66 REQUIRED COMPONENTS system program_options unit_test_framework)
+find_package(Boost 1.66 REQUIRED COMPONENTS system thread program_options unit_test_framework)
 
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(./src/)

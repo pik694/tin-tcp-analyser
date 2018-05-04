@@ -21,26 +21,20 @@ namespace tcp_analyser::runnable::client {
 
     private:
 
-        void sendMessages();
-        void receiveMessages();
+        void handleConnect(const boost::system::error_code& error);
 
-        void sendMessageAsync(const std::string& message);
+        void handleReadHeader(const boost::system::error_code& error);
+        void handleReadMessage(const boost::system::error_code& error);
 
-        void waitForExit();
+        void close();
 
+        boost::asio::io_context context_;
+        boost::asio::ip::tcp::socket socket_;
 
-        std::mutex outQueueMutex_;
-        std::condition_variable cv_;
-        bool end_ = false;
+        size_t messageLength_ = 0;
+        static const size_t MAX_MESSAGE_LENGTH = 1024;
 
-        std::queue<std::string> outQueue_;
-
-
-
-        std::string hostname_;
-        uint16_t port_;
-
-        std::unique_ptr<boost::asio::ip::tcp::iostream> stream_;
+        char message_ [MAX_MESSAGE_LENGTH + 1];
     };
 
 }
