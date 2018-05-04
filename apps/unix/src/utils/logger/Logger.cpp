@@ -10,15 +10,15 @@ using namespace tcp_analyser::utils::logger;
 using namespace tcp_analyser::utils::logger::log;
 
 Logger* Logger::instance_ = nullptr;
-bool Logger::work_ = false;
-bool Logger::shouldFinish_ = false;
 
 std::mutex mutex_;
 std::condition_variable conditionVariable_;
 
+Logger::Logger()
+        : shouldFinish_( false ) { }
+
 Logger &Logger::getInstance()
 {
-
     if( instance_ == nullptr )
         instance_ = new Logger();
 
@@ -27,26 +27,28 @@ Logger &Logger::getInstance()
 
 void Logger::log()
 {
-    while( work_ )
+    while( !( shouldFinish_ && logsQueue_.empty() ) )
     {
         std::unique_lock<std::mutex> guard( mutex_ );
-        conditionVariable_.wait( guard, []{ return !logsQueue_.empty(); } );
+        conditionVariable_.wait( guard, [this]{ return !logsQueue_.empty(); } );
 
         logsQueue_.front()->show();
         logsQueue_.pop();
-        work_ = !( shouldFinish_ && logsQueue_.empty() );
     }
 }
 
 void Logger::close()
 {
     shouldFinish_ = true;
+    add( "Program finished!", LogLevel::info );
 }
 
 void Logger::add( const std::string &log, LogLevel level )
 {
-    std::unique_lock< std::mutex > guard( mutex_ );
-    logsQueue_.emplace( LogFactory::getInstance().getLog( log, level ) );
+    {
+        std::unique_lock< std::mutex > guard( mutex_ );
+        logsQueue_.emplace(LogFactory::getInstance().getLog(log, level));
+    }
     conditionVariable_.notify_all();
 }
 
@@ -62,4 +64,6 @@ Logger::~Logger()
 
     instance_ = nullptr;
 }
+
+
 

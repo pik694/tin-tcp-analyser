@@ -7,9 +7,7 @@
 
 #include <memory>
 #include <string>
-#include <boost/bind.hpp>
 #include <boost/asio.hpp>
-#include <boost/thread/thread.hpp>
 #include <utils/logger/log/Log.h>
 #include <queue>
 
@@ -29,7 +27,7 @@ namespace tcp_analyser::utils::logger
         Logger &operator=( const Logger & ) = delete;
 
 
-        static void log();
+        void log();
 
         void add( const std::string & log,
                   tcp_analyser::utils::logger::log::LogLevel level = tcp_analyser::utils::logger::log::LogLevel::info );
@@ -38,15 +36,13 @@ namespace tcp_analyser::utils::logger
         void close();
 
     private:
-        Logger() = default;
+        Logger();
 
         static Logger* instance_;
 
-        static LogsQueue logsQueue_;
+        LogsQueue logsQueue_;
 
-        static bool work_;
-
-        static bool shouldFinish_;
+        bool shouldFinish_;
     };
 }
 
