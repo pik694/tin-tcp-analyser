@@ -1,0 +1,23 @@
+MODES:
+1 - server
+2 - client
+
+TCP Options:
+4 - SACK
+
+Needed options per execution mode:
+- SERVER
+    - port
+- CLIENT
+    - port
+    - hostname
+
+Additional options per execution mode:
+- SERVER
+    - TCP options
+    - input file
+    - output file
+- CLIENT
+    - TCP options
+    - input file
+    - output file

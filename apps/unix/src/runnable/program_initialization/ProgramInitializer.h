@@ -6,18 +6,20 @@
 #define UNIX_TCP_ANALYSER_PROGRAMINITIALIZER_H
 
 #include <string>
-#include <runnable/Runnable.h>
+#include "runnable/Runnable.h"
+#include "../../utils/system_api/TCPOptions.h"
 
 namespace tcp_analyser::runnable::program_initialization
 {
-    class ProgramInitializer {
+    class ProgramInitializer
+    {
         using c_str = const std::string;
 
     public:
 
-        ProgramInitializer(int argc, const char **argv);
+        ProgramInitializer( int argc, const char **argv );
 
-        std::unique_ptr<Runnable> getProgram();
+        std::unique_ptr< Runnable > getProgram();
 
         virtual ~ProgramInitializer() = default;
 
@@ -25,7 +27,7 @@ namespace tcp_analyser::runnable::program_initialization
 
         void parse();
 
-        std::string command(std::string longCommand, std::string shortCommand) const;
+        std::string command( std::string longCommand, std::string shortCommand ) const;
 
         boost::program_options::options_description infoOptions_;
         boost::program_options::options_description runOptions_;
@@ -40,21 +42,25 @@ namespace tcp_analyser::runnable::program_initialization
         std::string hostname_;
         std::string inputFile_;
         std::string outputFile_;
+        std::vector< tcp_analyser::utils::system_api::TCPOptions_E > TCPOptions_;
 
 
         c_str HELP = "help";
-        c_str VERSION = "version";
         c_str MODE = "mode";
         c_str PORT = "port";
         c_str HOSTNAME = "hostname";
         c_str INPUT = "input filename";
         c_str OUTPUT = "output filename";
+        c_str TCP_OPTIONS = "TCP options";
     };
 }
 
-namespace boost{
+namespace boost
+{
     template<>
-    tcp_analyser::runnable::ExecutionMode_E lexical_cast<tcp_analyser::runnable::ExecutionMode_E>(const std::string &name);
+    tcp_analyser::runnable::ExecutionMode_E lexical_cast< tcp_analyser::runnable::ExecutionMode_E >( const std::string &name );
+    template<>
+    tcp_analyser::utils::system_api::TCPOptions_E lexical_cast< tcp_analyser::utils::system_api::TCPOptions_E >( const std::string &name );
 }
 
 

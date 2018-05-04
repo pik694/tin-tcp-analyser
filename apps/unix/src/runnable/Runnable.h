@@ -7,14 +7,17 @@
 
 #include <boost/program_options.hpp>
 
-namespace tcp_analyser::runnable {
+namespace tcp_analyser::runnable
+{
 
-    enum class ExecutionMode_E {
+    enum class ExecutionMode_E
+    {
         SERVER = 1,
         CLIENT = 2
     };
 
-    class Runnable {
+    class Runnable
+    {
     public:
         virtual ~Runnable() = default;
 
@@ -22,34 +25,27 @@ namespace tcp_analyser::runnable {
 
     };
 
-    class RunnableDecorator : public Runnable {
+    class RunnableDecorator : public Runnable
+    {
     public:
-        explicit RunnableDecorator(std::unique_ptr<Runnable> program) :
-                program_(std::move(program)) {}
+        explicit RunnableDecorator( std::unique_ptr< Runnable > program )
+                : program_( std::move( program ) ) {}
 
         void run() override;
 
         virtual ~RunnableDecorator() = default;
 
     private:
-        std::unique_ptr<Runnable> program_;
+        std::unique_ptr< Runnable > program_;
     };
 
-    class GetVersionProgram : public RunnableDecorator {
+    class HelpProgram : public RunnableDecorator
+    {
     public:
-        explicit GetVersionProgram(std::unique_ptr<Runnable> program) : RunnableDecorator(std::move(program)) {}
-
-        void run() override;
-
-        virtual ~GetVersionProgram() = default;
-    };
-
-    class HelpProgram : public RunnableDecorator {
-    public:
-        HelpProgram(std::unique_ptr<Runnable> program,
-                    boost::program_options::options_description description) :
-                RunnableDecorator(std::move(program)),
-                description_(std::move(description)) {}
+        HelpProgram( std::unique_ptr< Runnable > program,
+                    boost::program_options::options_description description )
+                : RunnableDecorator( std::move( program ) ),
+                  description_( std::move( description ) ) {}
 
         void run() override;
 
@@ -59,11 +55,12 @@ namespace tcp_analyser::runnable {
         boost::program_options::options_description description_;
     };
 
-    class ErrorInfoProgram : public RunnableDecorator {
+    class ErrorInfoProgram : public RunnableDecorator
+    {
     public:
-        ErrorInfoProgram(const std::string &errorMessage, std::unique_ptr<Runnable> program) :
-                RunnableDecorator(std::move(program)),
-                errorMessage_(errorMessage) {}
+        ErrorInfoProgram( const std::string &errorMessage, std::unique_ptr< Runnable > program )
+                : RunnableDecorator( std::move( program ) ),
+                  errorMessage_( errorMessage ) {}
 
         void run() override;
 

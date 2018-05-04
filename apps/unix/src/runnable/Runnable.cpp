@@ -7,14 +7,10 @@
 #include "Runnable.h"
 using namespace tcp_analyser::runnable;
 
-void GetVersionProgram::run() {
-//    std::cout << "Runnable version : " << PROGRAM_VERSION_MAJOR << "." << PROGRAM_VERSION_MINOR << std::endl;
-    RunnableDecorator::run();
-}
 
 void HelpProgram::run() {
     std::cout << description_ << std::endl;
-    std::ifstream manual( "manual.txt" );
+    std::ifstream manual( "../../resources/manual.txt" );
     if( manual.is_open() ) {
         std::cout << manual.rdbuf() << std::endl;
         manual.close();
