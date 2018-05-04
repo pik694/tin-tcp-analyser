@@ -8,7 +8,7 @@
 #include <iostream>
 
 using boost::asio::ip::tcp;
-
+//using tcp_analyser::utils::logger::Logger;
 
 tcp_analyser::runnable::client::Client::Client(std::string &hostname, uint16_t port) :
         context_(),
