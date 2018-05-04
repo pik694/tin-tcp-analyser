@@ -17,14 +17,27 @@ namespace tcp_analyser::runnable::client {
 
         void run() override;
 
+        void sendMessageAsync(const std::string& message);
+
         ~Client() override = default;
 
     private:
+        struct message_t{
+            message_t(const std::string& message);
+            char* data;
+            size_t length;
+            ~message_t();
+        };
+
 
         void handleConnect(const boost::system::error_code& error);
 
         void handleReadHeader(const boost::system::error_code& error);
         void handleReadMessage(const boost::system::error_code& error);
+
+        void queueMessage(std::string message);
+        void handleSendMessage(const boost::system::error_code& error);
+
 
         void close();
 
@@ -34,7 +47,12 @@ namespace tcp_analyser::runnable::client {
         size_t messageLength_ = 0;
         static const size_t MAX_MESSAGE_LENGTH = 1024;
 
-        char message_ [MAX_MESSAGE_LENGTH + 1];
+        char rcvMessage_ [MAX_MESSAGE_LENGTH + 1];
+
+        std::queue<std::unique_ptr<message_t>> queuedMessages_;
+
+
+
     };
 
 }

@@ -57,7 +57,7 @@ void tcp_analyser::runnable::client::Client::handleReadHeader(const boost::syste
 
         boost::asio::async_read(
                 socket_,
-                boost::asio::buffer(message_, messageLength_),
+                boost::asio::buffer(rcvMessage_, messageLength_),
                 boost::bind(&Client::handleReadMessage, this, boost::asio::placeholders::error)
         );
 
@@ -69,25 +69,73 @@ void tcp_analyser::runnable::client::Client::handleReadHeader(const boost::syste
 
 void tcp_analyser::runnable::client::Client::handleReadMessage(const boost::system::error_code &error) {
     //TODO: logger
-    if (!error){
+    if (!error) {
         //Logger
 
-        std::cout.write(message_, messageLength_);
+        std::cout.write(rcvMessage_, messageLength_);
 
         boost::asio::async_read(
                 socket_,
                 boost::asio::buffer(&messageLength_, sizeof(messageLength_)),
                 boost::bind(&Client::handleReadHeader, this, boost::asio::placeholders::error)
         );
-    }
-    else{
+    } else {
         boost::asio::post(context_, boost::bind(&Client::close, this));
     }
 }
+
+void tcp_analyser::runnable::client::Client::sendMessageAsync(const std::string &message) {
+    boost::asio::post(
+            context_,
+            boost::bind(&Client::queueMessage, this, message)
+    );
+}
+
+void tcp_analyser::runnable::client::Client::queueMessage(std::string message) {
+    bool writeInProgress = !queuedMessages_.empty();
+
+    queuedMessages_.emplace(new message_t(message));
+
+    if (!writeInProgress) {
+
+        boost::asio::async_write(
+                socket_,
+                boost::asio::buffer(queuedMessages_.front()->data, queuedMessages_.front()->length),
+                boost::bind(&Client::handleSendMessage, this, boost::asio::placeholders::error)
+        );
+    }
+}
+
+void tcp_analyser::runnable::client::Client::handleSendMessage(const boost::system::error_code &error) {
+
+    if (!error){
+        queuedMessages_.pop();
+        if (!queuedMessages_.empty())
+            boost::asio::async_write(
+                    socket_,
+                    boost::asio::buffer(queuedMessages_.front()->data, queuedMessages_.front()->length),
+                    boost::bind(&Client::handleSendMessage, this, boost::asio::placeholders::error)
+            );
+    }
+    else {
+        close();
+    }
+}
+
 
 void tcp_analyser::runnable::client::Client::close() {
     socket_.close();
 }
 
+tcp_analyser::runnable::client::Client::message_t::message_t(const std::string &message) {
 
+    length = message.size() + sizeof(size_t);
+    data = new char[length + 1];
 
+    *data = message.size();
+    memcpy(const_cast<char*>(message.c_str()), data + sizeof(size_t), message.size());
+}
+
+tcp_analyser::runnable::client::Client::message_t::~message_t() {
+    delete data;
+}
