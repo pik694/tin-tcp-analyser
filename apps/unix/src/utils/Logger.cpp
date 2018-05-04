@@ -2,7 +2,7 @@
 // Created by Piotr Żelazko on 03.05.2018.
 //
 
-#include <stdexcept>
+#include <iostream>
 #include "Logger.hpp"
 
 
@@ -19,5 +19,5 @@ tcp_analyser::utils::Logger &tcp_analyser::utils::Logger::getInstance() {
 
 void tcp_analyser::utils::Logger::log(const std::string &log, tcp_analyser::utils::LogLevel level) {
     //TODO
-    throw std::runtime_error("TODO");
+    std::cerr << log << std::endl;
 }
