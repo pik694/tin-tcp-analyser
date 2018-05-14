@@ -2,10 +2,11 @@
 // Created by Daniel Bigos on 14.05.18.
 //
 
+#include <utils/system_api/options/Timestamps.h>
 #include "OptionsFactory.h"
 
-using namespace tcp_analyser::system_api;
-using namespace tcp_analyser::system_api::options;
+using namespace tcp_analyser::utils::system_api;
+using namespace tcp_analyser::utils::system_api::options;
 
 OptionsFactory* OptionsFactory::instance_ = nullptr;
 
@@ -25,7 +26,7 @@ OptionsFactory::~OptionsFactory()
     instance_ = nullptr;
 }
 
-shared_ptr< Option > OptionsFactory::getOption( TCPOPtions_E tcpoPtions_e )
+std::unique_ptr< TCPOption > OptionsFactory::getOption( TCPOptions_E option )
 {
-    return nullptr;
+    return factoryOptions_.at( option )();
 }

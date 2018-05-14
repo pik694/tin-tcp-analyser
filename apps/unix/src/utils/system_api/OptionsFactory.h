@@ -5,9 +5,15 @@
 #ifndef UNIX_TCP_ANALYSER_OPTIONSFACTORY_H
 #define UNIX_TCP_ANALYSER_OPTIONSFACTORY_H
 
-#include "options/TCPOptions.h"
+#include <memory>
+#include <unordered_map>
+#include <utils/system_api/options/TCPOption.h>
+#include <utils/system_api/options/Timestamps.h>
+#include <utils/system_api/options/Sack.h>
 
-namespace tcp_analyser::system_api
+
+using TCPOptionsEnum = tcp_analyser::utils::system_api::options::TCPOptions_E;
+namespace tcp_analyser::utils::system_api
 {
     class OptionsFactory
     {
@@ -15,11 +21,17 @@ namespace tcp_analyser::system_api
         static OptionsFactory &getInstance();
         OptionsFactory( const OptionsFactory& ) = delete;
         OptionsFactory &operator=( const OptionsFactory& ) = delete;
+        virtual ~OptionsFactory();
 
-        std::shared_ptr< tcp_analyser::system_api::options::Option > getOption( tcp_analyser::system_api::options::TCPOptions_E );
+        std::unique_ptr< options::TCPOption > getOption( TCPOptionsEnum );
 
     private:
-        OptionsFactory();
+        OptionsFactory() = default;
+
+        const std::unordered_map< TCPOptionsEnum, std::function< std::unique_ptr< options::TCPOption >() > > factoryOptions_ {
+            { TCPOptionsEnum::TIMESTAMPS, [](){ return std::make_unique< options::Timestamps >(); } },
+            { TCPOptionsEnum::SACK, [](){ return std::make_unique< options::Sack >(); } }
+        };
 
         static OptionsFactory* instance_;
     };
