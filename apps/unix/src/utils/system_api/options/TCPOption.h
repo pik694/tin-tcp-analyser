@@ -8,6 +8,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
+#include <string>
 
 const unsigned  ENABLE = 1;
 const unsigned DISABLE = 0;
