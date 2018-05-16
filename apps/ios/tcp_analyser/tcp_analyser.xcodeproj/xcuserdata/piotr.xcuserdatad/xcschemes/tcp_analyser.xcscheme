@@ -7,7 +7,7 @@
             buildForRunning = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "65BB2ECD32BB978C35BAE382"
+               BlueprintIdentifier = "AE1F29A220AC564C005EADE2"
                BuildableName = "tcp_analyser.app"
                BlueprintName = "tcp_analyser"
                ReferencedContainer = "container:tcp_analyser.xcodeproj">
@@ -22,7 +22,7 @@
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "65BB2ECD32BB978C35BAE382"
+            BlueprintIdentifier = "AE1F29A220AC564C005EADE2"
             BuildableName = "tcp_analyser.app"
             BlueprintName = "tcp_analyser"
             ReferencedContainer = "container:tcp_analyser.xcodeproj">
