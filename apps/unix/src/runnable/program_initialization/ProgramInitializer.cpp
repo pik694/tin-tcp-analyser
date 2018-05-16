@@ -2,14 +2,17 @@
 // Created by Daniel Bigos on 03.05.18.
 //
 
-#include <runnable/client/Client.hpp>
-#include <runnable/server/Server.hpp>
+#include <runnable/client/Client.h>
+#include <runnable/server/Server.h>
+#include <utils/logger/Logger.hpp>
+#include <thread>
 #include "runnable/program_initialization/ProgramInitializer.h"
 
 using namespace tcp_analyser::runnable;
 using namespace tcp_analyser::runnable::program_initialization;
 using namespace tcp_analyser::runnable::client;
 using namespace tcp_analyser::runnable::server;
+using namespace tcp_analyser::utils::logger;
 using namespace boost::program_options;
 using namespace tcp_analyser::utils::system_api;
 
@@ -28,7 +31,7 @@ ProgramInitializer::ProgramInitializer( int argc, const char **argv ) :
             ( command( MODE, "m" ).c_str(), value< ExecutionMode_E >( &executionMode_ )->required(), "Specifies program mode" )
             ( command( PORT, "p" ).c_str(), value< uint16_t >( &port_ )->required(), "Specifies port number" )
             ( command( HOSTNAME, "a" ).c_str(), value< std::string >( &hostname_ )->default_value( "" ), "Specifies server hostname" )
-            ( command( TCP_OPTIONS, "t" ).c_str(), value< std::vector< TCPOptions_E > >( &TCPOptions_ )->multitoken(), "Specifies epoch count" )
+            ( command( TCP_OPTIONS, "t" ).c_str(), value< std::vector< options::TCPOptions_E > >( &TCPOptions_ )->multitoken(), "Specifies epoch count" )
             ( command( INPUT, "i" ).c_str(), value< std::string >( &inputFile_ )->default_value( "" ), "Specifies input file" )
             ( command( OUTPUT, "o" ).c_str(), value< std::string >( &outputFile_ )->default_value( "" ), "Specifies output file" );
 }
@@ -70,14 +73,15 @@ std::unique_ptr< Runnable > ProgramInitializer::getProgram()
                 if( hostname_.length() == 0 )
                     throw std::invalid_argument( "No hostname specified" );
 
-                return std::make_unique< Client >( hostname_, port_ );
+                return std::make_unique< client::Client >( hostname_, port_ );
 
             case ExecutionMode_E::SERVER:
-                return std::make_unique< Server >( port_ );
+                return std::make_unique< server::Server >( port_ );
         }
     }
     catch ( std::exception& e )
     {
+        Logger::getInstance()->add( e );
         return std::make_unique< ErrorInfoProgram >( e.what(), std::move( program ) );
     }
 
@@ -121,15 +125,15 @@ namespace boost
     }
 
     template<>
-    tcp_analyser::utils::system_api::TCPOptions_E lexical_cast< tcp_analyser::utils::system_api::TCPOptions_E >( const std::string &name )
+    tcp_analyser::utils::system_api::options::TCPOptions_E lexical_cast< tcp_analyser::utils::system_api::options::TCPOptions_E >( const std::string &name )
     {
 
-        using string_function_map_t = std::map< const std::string, tcp_analyser::utils::system_api::TCPOptions_E >;
+        using string_function_map_t = std::map< const std::string, tcp_analyser::utils::system_api::options::TCPOptions_E >;
 
         static const string_function_map_t map = {
                 { std::to_string(
-                        static_cast< int >( tcp_analyser::utils::system_api::TCPOptions_E::SACK ) ),
-                        tcp_analyser::utils::system_api::TCPOptions_E::SACK }
+                        static_cast< int >( tcp_analyser::utils::system_api::options::TCPOptions_E::SACK ) ),
+                        tcp_analyser::utils::system_api::options::TCPOptions_E::SACK }
         };
 
         if( map.find( name ) == map.end() )

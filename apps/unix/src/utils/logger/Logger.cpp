@@ -3,6 +3,8 @@
 //
 
 #include <iostream>
+#include <mutex>
+#include <condition_variable>
 #include "Logger.hpp"
 #include "log/LogFactory.h"
 
@@ -17,12 +19,12 @@ std::condition_variable conditionVariable_;
 Logger::Logger()
         : shouldFinish_( false ) { }
 
-Logger &Logger::getInstance()
+Logger *Logger::getInstance()
 {
     if( instance_ == nullptr )
         instance_ = new Logger();
 
-    return *instance_;
+    return instance_;
 }
 
 void Logger::log()
@@ -40,7 +42,7 @@ void Logger::log()
 void Logger::close()
 {
     shouldFinish_ = true;
-    add( "Program finished!", LogLevel::info );
+    add( "Exiting program...", LogLevel::info );
 }
 
 void Logger::add( const std::string &log, LogLevel level )

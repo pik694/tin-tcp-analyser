@@ -23,6 +23,8 @@ namespace tcp_analyser::runnable
 
         virtual void run(){}
 
+        std::string getSystemDate();
+
     };
 
     class RunnableDecorator : public Runnable

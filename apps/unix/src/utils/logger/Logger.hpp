@@ -7,7 +7,6 @@
 
 #include <memory>
 #include <string>
-#include <boost/asio.hpp>
 #include <utils/logger/log/Log.h>
 #include <queue>
 
@@ -20,7 +19,7 @@ namespace tcp_analyser::utils::logger
     {
     public:
 
-        static Logger &getInstance();
+        static Logger *getInstance();
         ~Logger();
 
         Logger( const Logger & ) = delete;

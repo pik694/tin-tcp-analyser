@@ -42,7 +42,7 @@ namespace tcp_analyser::runnable::program_initialization
         std::string hostname_;
         std::string inputFile_;
         std::string outputFile_;
-        std::vector< tcp_analyser::utils::system_api::TCPOptions_E > TCPOptions_;
+        std::vector< tcp_analyser::utils::system_api::options::TCPOptions_E > TCPOptions_;
 
 
         c_str HELP = "help";
@@ -60,7 +60,7 @@ namespace boost
     template<>
     tcp_analyser::runnable::ExecutionMode_E lexical_cast< tcp_analyser::runnable::ExecutionMode_E >( const std::string &name );
     template<>
-    tcp_analyser::utils::system_api::TCPOptions_E lexical_cast< tcp_analyser::utils::system_api::TCPOptions_E >( const std::string &name );
+    tcp_analyser::utils::system_api::options::TCPOptions_E lexical_cast< tcp_analyser::utils::system_api::options::TCPOptions_E >( const std::string &name );
 }
 
 
