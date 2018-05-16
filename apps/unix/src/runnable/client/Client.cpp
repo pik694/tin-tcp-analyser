@@ -18,7 +18,7 @@ void Client::run()
         throw std::runtime_error( "Cannot connect to the server:" + hostname_ + " at port:" + std::to_string( port_ ) );
     else
     {
-        Logger::getInstance()->add( getSystemDate() + " : Client connected to the server" );
+        Logger::getInstance()->add( getSystemDate() + " : Client connected to the server at " + hostname_ + " at port: " + std::to_string( port_ ) );
     }
 
     std::string message;
