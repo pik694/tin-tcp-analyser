@@ -37,6 +37,8 @@ namespace tcp_analyser::utils::logger
     private:
         Logger();
 
+        std::string getSystemDate();
+
         static Logger* instance_;
 
         LogsQueue logsQueue_;

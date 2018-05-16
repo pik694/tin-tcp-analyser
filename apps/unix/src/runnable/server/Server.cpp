@@ -25,7 +25,7 @@ void Server::run()
         std::string msg;
         io_context io_context;
 
-        Logger::getInstance()->add( getSystemDate() + " : Server is listening on port: " + std::to_string( port_ ), log::LogLevel::info );
+        Logger::getInstance()->add( "Server is listening on port: " + std::to_string( port_ ), log::LogLevel::info );
 
         tcp::endpoint endpoint( tcp::v4(), port_ );
         tcp::acceptor acceptor( io_context, endpoint);
@@ -36,7 +36,7 @@ void Server::run()
         if( !ec )
         {
             auto start = std::chrono::system_clock::now();
-            Logger::getInstance()->add( getSystemDate() + " : Server accepted connection" );
+            Logger::getInstance()->add( "Server accepted connection" );
             while( std::chrono::system_clock::now() - start < std::chrono::minutes( DURATION_IN_MIN ) )
             {
                 stream << "Ping";
@@ -49,7 +49,7 @@ void Server::run()
         Logger::getInstance()->add( e );
     }
 
-    Logger::getInstance()->add( getSystemDate() + " : Connection closed!" );
+    Logger::getInstance()->add( "Connection closed!" );
     Logger::getInstance()->close();
 
     thread.join();

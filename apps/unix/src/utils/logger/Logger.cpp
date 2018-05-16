@@ -5,6 +5,8 @@
 #include <iostream>
 #include <mutex>
 #include <condition_variable>
+#include <sstream>
+#include <iomanip>
 #include "Logger.hpp"
 #include "log/LogFactory.h"
 
@@ -49,7 +51,7 @@ void Logger::add( const std::string &log, LogLevel level )
 {
     {
         std::unique_lock< std::mutex > guard( mutex_ );
-        logsQueue_.emplace(LogFactory::getInstance().getLog(log, level));
+        logsQueue_.emplace( LogFactory::getInstance().getLog( getSystemDate() + " : " + log, level ) );
     }
     conditionVariable_.notify_all();
 }
@@ -57,6 +59,15 @@ void Logger::add( const std::string &log, LogLevel level )
 void Logger::add( std::exception &e )
 {
     add( e.what(), LogLevel::error );
+}
+
+std::string Logger::getSystemDate()
+{
+    std::ostringstream stream;
+    std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+    std::time_t now_c = std::chrono::system_clock::to_time_t( now );
+    stream << std::put_time( std::localtime( &now_c ), "%F %T" );
+    return stream.str();
 }
 
 Logger::~Logger()

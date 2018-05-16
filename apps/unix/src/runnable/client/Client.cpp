@@ -18,13 +18,13 @@ void Client::run()
         throw std::runtime_error( "Cannot connect to the server:" + hostname_ + " at port:" + std::to_string( port_ ) );
     else
     {
-        Logger::getInstance()->add( getSystemDate() + " : Client connected to the server at " + hostname_ + " at port: " + std::to_string( port_ ) );
+        Logger::getInstance()->add( "Client connected to the server at " + hostname_ + " at port: " + std::to_string( port_ ) );
     }
 
     std::string message;
     while( std::getline( stream_, message ) );
 
-    Logger::getInstance()->add( getSystemDate() + " : Connection closed" );
+    Logger::getInstance()->add( "Connection closed" );
 
     Logger::getInstance()->close();
     thread.join();
