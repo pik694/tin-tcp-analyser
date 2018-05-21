@@ -7,8 +7,6 @@
 
 #include <runnable/Runnable.h>
 
-const int DURATION_IN_MIN = 1;
-
 namespace  tcp_analyser::runnable::server
 {
     class Server : public Runnable
@@ -23,6 +21,9 @@ namespace  tcp_analyser::runnable::server
         virtual void run() override;
 
     private:
+        void send();
+        void receive();
+
         uint16_t port_;
 
     };

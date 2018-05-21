@@ -12,6 +12,8 @@
 #include <ostream>
 #include <string>
 
+const std::string CLIENT_MESSAGE = "Client message";
+
 namespace tcp_analyser::runnable::client
 {
     class Client : public Runnable
@@ -28,9 +30,12 @@ namespace tcp_analyser::runnable::client
         virtual void run() override;
 
     private:
+
+        void send();
+        void receive();
+
         uint16_t port_;
         std::string hostname_;
-        boost::asio::ip::tcp::iostream stream_;
 
     };
 }

@@ -6,6 +6,15 @@
 #define UNIX_TCP_ANALYSER_PROGRAM_H
 
 #include <boost/program_options.hpp>
+#include <thread>
+#include <boost/asio/ip/tcp.hpp>
+
+const unsigned SLEEP_TIME = 1;
+const char LOWER_QUIT = 'q';
+const char UPPER_QUIT = 'Q';
+const size_t LOWERCASE_LETTER = 97;
+const size_t UPPERCASE_LETTER = 65;
+const size_t LETTERS_RANGE = 26;
 
 namespace tcp_analyser::runnable
 {
@@ -24,6 +33,16 @@ namespace tcp_analyser::runnable
         virtual void run(){}
 
 
+    protected:
+        char getRandomChar( size_t range, size_t offset );
+
+        void getQuitSignal();
+        void joinThreads();
+
+        void sendSign( char sign );
+        boost::asio::ip::tcp::iostream stream_;
+        std::vector< std::thread >threads_;
+        bool finish_ { false };
     };
 
     class RunnableDecorator : public Runnable
