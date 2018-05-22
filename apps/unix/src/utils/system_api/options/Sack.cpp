@@ -3,17 +3,24 @@
 //
 
 #include <string>
+#include <sys/stat.h>
+#include <thread>
+#include <fstream>
 #include "Sack.h"
+#include <utils/logger/Logger.hpp>
+#include <iostream>
+#include <sstream>
 
 using namespace tcp_analyser::utils::system_api::options;
 
 Sack::Sack()
+    : TCPOption( "sysctl net.ipv4.tcp_sack" )
 {
-    command_ = "sysctl net.ipv4.tcp_sack" ;
-    std::system( ( command_ + "=" + std::to_string( ENABLE ) ).c_str() );
+    getOption();
+    setOption();
 }
 
 Sack::~Sack()
 {
-    std::system( ( command_ + "=" + std::to_string( DISABLE ) ).c_str() );
+    revertOption();
 }

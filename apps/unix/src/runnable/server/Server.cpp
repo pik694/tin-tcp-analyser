@@ -13,9 +13,13 @@ using namespace tcp_analyser::runnable::server;
 using namespace tcp_analyser::utils::logger;
 using namespace boost::asio;
 using namespace boost::asio::ip;
+using namespace tcp_analyser::utils::system_api::options;
 
-Server::Server( uint16_t port )
-    : port_( port ) { }
+Server::Server( uint16_t port, std::vector< TCPOptions_E > options )
+    : port_( port )
+{
+    initOptions( options );
+}
 
 void Server::run()
 {

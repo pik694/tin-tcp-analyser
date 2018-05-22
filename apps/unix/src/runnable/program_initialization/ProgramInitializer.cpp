@@ -6,6 +6,8 @@
 #include <runnable/server/Server.h>
 #include <utils/logger/Logger.hpp>
 #include <thread>
+#include <fstream>
+#include <utils/system_api/OptionsFactory.h>
 #include "runnable/program_initialization/ProgramInitializer.h"
 
 using namespace tcp_analyser::runnable;
@@ -64,6 +66,11 @@ std::unique_ptr< Runnable > ProgramInitializer::getProgram()
         return std::make_unique< ErrorInfoProgram >( e.what(), std::move( program ) );
     }
 
+//    tcp_analyser::utils::system_api::OptionsFactory::getInstance().getOption( tcp_analyser::utils::system_api::options::TCPOptions_E::SACK );
+//    tcp_analyser::utils::system_api::OptionsFactory::getInstance().getOption( tcp_analyser::utils::system_api::options::TCPOptions_E::TIMESTAMPS );
+//    tcp_analyser::utils::system_api::OptionsFactory::getInstance().getOption( tcp_analyser::utils::system_api::options::TCPOptions_E::DSACK );
+//    tcp_analyser::utils::system_api::OptionsFactory::getInstance().getOption( tcp_analyser::utils::system_api::options::TCPOptions_E::ALLOWED_CONGESTION_CONTROL );
+//    tcp_analyser::utils::system_api::OptionsFactory::getInstance().getOption( tcp_analyser::utils::system_api::options::TCPOptions_E::FRTO );
 
     try
     {
@@ -76,7 +83,7 @@ std::unique_ptr< Runnable > ProgramInitializer::getProgram()
                 return std::make_unique< client::Client >( hostname_, port_ );
 
             case ExecutionMode_E::SERVER:
-                return std::make_unique< server::Server >( port_ );
+                return std::make_unique< server::Server >( port_, TCPOptions_ );
         }
     }
     catch ( std::exception& e )
@@ -133,7 +140,22 @@ namespace boost
         static const string_function_map_t map = {
                 { std::to_string(
                         static_cast< int >( tcp_analyser::utils::system_api::options::TCPOptions_E::SACK ) ),
-                        tcp_analyser::utils::system_api::options::TCPOptions_E::SACK }
+                        tcp_analyser::utils::system_api::options::TCPOptions_E::SACK },
+                { std::to_string(
+                        static_cast< int >( tcp_analyser::utils::system_api::options::TCPOptions_E::TIMESTAMPS ) ),
+                  tcp_analyser::utils::system_api::options::TCPOptions_E::TIMESTAMPS },
+                { std::to_string(
+                        static_cast< int >( tcp_analyser::utils::system_api::options::TCPOptions_E::DSACK ) ),
+                  tcp_analyser::utils::system_api::options::TCPOptions_E::DSACK },
+                { std::to_string(
+                        static_cast< int >( tcp_analyser::utils::system_api::options::TCPOptions_E::ABC ) ),
+                  tcp_analyser::utils::system_api::options::TCPOptions_E::ABC },
+                { std::to_string(
+                        static_cast< int >( tcp_analyser::utils::system_api::options::TCPOptions_E::ALLOWED_CONGESTION_CONTROL ) ),
+                  tcp_analyser::utils::system_api::options::TCPOptions_E::ALLOWED_CONGESTION_CONTROL },
+                { std::to_string(
+                        static_cast< int >( tcp_analyser::utils::system_api::options::TCPOptions_E::FRTO ) ),
+                        tcp_analyser::utils::system_api::options::TCPOptions_E::FRTO }
         };
 
         if( map.find( name ) == map.end() )

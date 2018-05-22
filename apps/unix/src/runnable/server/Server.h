@@ -15,7 +15,7 @@ namespace  tcp_analyser::runnable::server
         Server() = delete;
         Server( const Server & ) = delete;
         Server &operator= ( const Server & ) = delete;
-        Server( uint16_t port );
+        Server( uint16_t port, std::vector< tcp_analyser::utils::system_api::options::TCPOptions_E > );
         virtual ~Server() = default;
 
         virtual void run() override;

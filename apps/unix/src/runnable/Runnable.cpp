@@ -5,10 +5,13 @@
 #include <iostream>
 #include <fstream>
 #include <utils/logger/Logger.hpp>
+#include <utils/system_api/OptionsFactory.h>
 #include "Runnable.h"
 
 using namespace tcp_analyser::runnable;
 using namespace tcp_analyser::utils::logger;
+using namespace tcp_analyser::utils::system_api::options;
+using namespace tcp_analyser::utils::system_api;
 
 void HelpProgram::run() {
     std::cout << description_ << std::endl;
@@ -65,3 +68,10 @@ void Runnable::sendSign( char sign )
     stream_ << sign;
     sleep( SLEEP_TIME );
 }
+
+void Runnable::initOptions( std::vector< TCPOptions_E > & tcp_options )
+{
+    for ( auto &option  : tcp_options )
+        options.push_back( OptionsFactory::getInstance().getOption( option ) );
+}
+

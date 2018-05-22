@@ -10,26 +10,38 @@
 #include <netinet/tcp.h>
 #include <string>
 
-const unsigned  ENABLE = 1;
-const unsigned DISABLE = 0;
+const int ENABLE = 1;
+const int DISABLE = 0;
+const int UNDEFINED = -1;
+
+const std::string FIFO  = "/tmp/tcp_analyser";
 
 namespace tcp_analyser::utils::system_api::options
 {
     enum class TCPOptions_E
     {
-        SACK = 4,
-        TIMESTAMPS = 8
+        SACK = 1,
+        TIMESTAMPS = 2,
+        DSACK = 3,
+        FRTO = 4,
+        ABC = 5,
+        ALLOWED_CONGESTION_CONTROL = 6
     };
 
     class TCPOption
     {
     public:
-        TCPOption() = default;
+        TCPOption() = delete;
+        TCPOption( std::string option );
         virtual ~TCPOption() = default;
 
+        void getOption();
+        void setOption();
+        void revertOption();
+
     protected:
-        bool enabled_ { false };
-        std::string command_;
+        int value_ { UNDEFINED };
+        std::string option_;
     };
 }
 

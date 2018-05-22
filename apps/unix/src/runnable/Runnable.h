@@ -8,6 +8,7 @@
 #include <boost/program_options.hpp>
 #include <thread>
 #include <boost/asio/ip/tcp.hpp>
+#include <utils/system_api/options/TCPOption.h>
 
 const unsigned SLEEP_TIME = 1;
 const char LOWER_QUIT = 'q';
@@ -40,9 +41,12 @@ namespace tcp_analyser::runnable
         void joinThreads();
 
         void sendSign( char sign );
+        void initOptions( std::vector< tcp_analyser::utils::system_api::options::TCPOptions_E > & );
+
         boost::asio::ip::tcp::iostream stream_;
         std::vector< std::thread >threads_;
         bool finish_ { false };
+        std::vector< std::unique_ptr< tcp_analyser::utils::system_api::options::TCPOption > > options;
     };
 
     class RunnableDecorator : public Runnable
