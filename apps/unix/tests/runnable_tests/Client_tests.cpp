@@ -6,7 +6,7 @@
 #ifdef BOOST_TEST_DYN_LINK
 
 #include <boost/test/unit_test.hpp>
-#include <runnable/client/Client.hpp>
+#include <runnable/client/Client.h>
 
 using tcp_analyser::runnable::client::Client;
 
