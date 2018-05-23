@@ -8,7 +8,7 @@
 
     <Button
         android:id="@+id/startClientButton"
-        android:layout_width="142dp"
+        android:layout_width="155dp"
         android:layout_height="62dp"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
@@ -20,11 +20,11 @@
 
     <Button
         android:id="@+id/startServerButton"
-        android:layout_width="126dp"
+        android:layout_width="141dp"
         android:layout_height="59dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginRight="32dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
         android:onClick="startServer"
         android:text="Start Server"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -32,7 +32,7 @@
 
     <TextView
         android:id="@+id/clientTextView"
-        android:layout_width="143dp"
+        android:layout_width="153dp"
         android:layout_height="118dp"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
@@ -44,9 +44,9 @@
         android:id="@+id/serverTextView"
         android:layout_width="151dp"
         android:layout_height="112dp"
-        android:layout_marginBottom="12dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
         app:layout_constraintBottom_toTopOf="@+id/startServerButton"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -137,5 +137,27 @@
         android:text="Confirm"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+    <TextView
+        android:id="@+id/clientStatusTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:text="Client is off"
+        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/serverStatusTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="Server is off"
+        app:layout_constraintBottom_toTopOf="@+id/textView2"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

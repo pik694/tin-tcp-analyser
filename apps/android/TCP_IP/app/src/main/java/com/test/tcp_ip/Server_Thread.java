@@ -23,7 +23,6 @@ public class Server_Thread implements Runnable{
         this.connectionPort = connectionPort;
     }
 
-
     @Override
     public void run()  {
         try {

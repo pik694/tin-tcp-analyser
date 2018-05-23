@@ -1,5 +1,8 @@
 package com.test.tcp_ip;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
@@ -13,31 +16,41 @@ public class Client_Receiver extends Thread {
     public BufferedReader reader;
     public String message;
     public TextView clientTextView;
+    public final int DO_UPDATE_CLIENT_TEXT_VIEW = 2;
 
     public Client_Receiver(Socket client_socket, TextView clientTextView){
         this.client_socket = client_socket;
         this.clientTextView = clientTextView;
-
     }
 
     @Override
     public void run() {
         try {
             reader = new BufferedReader(new InputStreamReader(client_socket.getInputStream()));
-            do{
+            do {
                 message = reader.readLine();
                 System.out.println("client odebral: " + message);
-            }while(!message.contains("q"));
+                if (message != null) {
+                    sendMessageToMainThread(message);
+                }
+            } while (!message.contains("q"));
             client_socket.close();
-        }catch(Exception e){
-            System.out.println("koniec polaczenia");
-            e.printStackTrace();
-        }finally {
+            sendMessageToMainThread("Klient zamknął socket");
+        } catch (Exception e) {
             try {
                 client_socket.close();
-            } catch(IOException e) {
-                e.printStackTrace();
+            } catch (Exception e2) {
+                sendMessageToMainThread(e2.getMessage());
             }
+            sendMessageToMainThread(e.getMessage());
         }
     }
+
+        public void sendMessageToMainThread(String message){
+            Message msg = Message.obtain();
+            msg.obj = message;
+            msg.what = DO_UPDATE_CLIENT_TEXT_VIEW;
+            msg.setTarget(MainActivity.handler);
+            msg.sendToTarget();
+        }
 }

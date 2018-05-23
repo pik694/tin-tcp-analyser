@@ -32,4 +32,12 @@ public class Client_Thread implements Runnable {
             e.printStackTrace();
         }
     }
+
+    public void closeClientSocket()  {
+        try {
+            this.clientSocket.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 }

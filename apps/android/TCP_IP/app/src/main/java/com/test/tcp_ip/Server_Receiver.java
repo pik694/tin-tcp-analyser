@@ -2,6 +2,9 @@ package com.test.tcp_ip;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -19,6 +22,8 @@ public class Server_Receiver extends Thread{
     public String message;
     public TextView serverTextView;
     public ServerSocket serverSocket;
+    public final int DO_UPDATE_SERVER_TEXT_VIEW = 1;
+
 
     public Server_Receiver(Socket server_socket, TextView serverTextView, ServerSocket serverSocket){
         this.server_socket = server_socket;
@@ -33,20 +38,29 @@ public class Server_Receiver extends Thread{
             do{
                 message = reader.readLine();
                 System.out.println("server odebral: " + message);
-
+                if(message != null ){
+                    sendMessageToMainThread(message);
+                }
             }while(!message.contains("q"));
             server_socket.close();
             serverSocket.close();
+            sendMessageToMainThread("Serwe zamknął socket");
         }catch(Exception e){
-            System.out.println("koniec polaczenia");
-            e.printStackTrace();
-        }finally{
             try {
                 server_socket.close();
                 serverSocket.close();
-            } catch(IOException e) {
-                e.printStackTrace();
+            }catch(Exception e2 ){
+                sendMessageToMainThread(e2.getMessage());
             }
+            sendMessageToMainThread(e.getMessage());
         }
+    }
+
+    public void sendMessageToMainThread(String message){
+        Message msg = Message.obtain();
+        msg.obj = message;
+        msg.what = DO_UPDATE_SERVER_TEXT_VIEW;
+        msg.setTarget(MainActivity.handler);
+        msg.sendToTarget();
     }
 }
