@@ -7,6 +7,7 @@
 
 #include <memory>
 #include <unordered_map>
+#include <functional>
 #include <utils/system_api/options/TCPOption.h>
 #include <utils/system_api/options/Timestamps.h>
 #include <utils/system_api/options/Sack.h>
