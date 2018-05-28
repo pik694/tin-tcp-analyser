@@ -25,6 +25,10 @@ public class MainActivity extends AppCompatActivity {
    public static Handler handler;
    public final int DO_UPDATE_SERVER_TEXT_VIEW = 1;
    public final int DO_UPDATE_CLIENT_TEXT_VIEW = 2;
+   public final int DO_UPDATE_SERVER_STATUS_TEXT_VIEW = 3;
+   public final int DO_UPDATE_CLIENT_STATUS_TEXT_VIEW = 4;
+
+
 
 
     @Override
@@ -48,14 +52,18 @@ public class MainActivity extends AppCompatActivity {
                     case DO_UPDATE_CLIENT_TEXT_VIEW:
                         updateClientTextView(msg.obj.toString());
                         break;
+                    case DO_UPDATE_SERVER_STATUS_TEXT_VIEW:
+                        updateServerStatus();
+                        break;
+                    case DO_UPDATE_CLIENT_STATUS_TEXT_VIEW:
+                        updateClientStatus();
+                        break;
                     default:
                         break;
                 }
             }
         };
     }
-
-
 
     public void startServer(View v){
         Server_Thread serverThread = new Server_Thread(serverTextView,connectionPort);
@@ -82,5 +90,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateClientTextView(String message){
         clientTextView.setText("server sent: " + message);
+    }
+
+    public void updateServerStatus(){
+        serverStatusTextView.setText("Client off");
+    }
+
+    public void updateClientStatus(){
+        clientStatusTextView.setText("Client off");
     }
 }

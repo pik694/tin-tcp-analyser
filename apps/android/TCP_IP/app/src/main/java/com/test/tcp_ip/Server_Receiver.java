@@ -23,6 +23,7 @@ public class Server_Receiver extends Thread{
     public TextView serverTextView;
     public ServerSocket serverSocket;
     public final int DO_UPDATE_SERVER_TEXT_VIEW = 1;
+    public final int DO_UPDATE_SERVER_STATUS_TEXT_VIEW = 3;
 
 
     public Server_Receiver(Socket server_socket, TextView serverTextView, ServerSocket serverSocket){
@@ -42,11 +43,13 @@ public class Server_Receiver extends Thread{
                     sendMessageToMainThread(message);
                 }
             }while(!message.contains("q"));
+            sendCahngeStatusToMainThread();
             server_socket.close();
             serverSocket.close();
             sendMessageToMainThread("Serwe zamknął socket");
         }catch(Exception e){
             try {
+                sendCahngeStatusToMainThread();
                 server_socket.close();
                 serverSocket.close();
             }catch(Exception e2 ){
@@ -60,6 +63,13 @@ public class Server_Receiver extends Thread{
         Message msg = Message.obtain();
         msg.obj = message;
         msg.what = DO_UPDATE_SERVER_TEXT_VIEW;
+        msg.setTarget(MainActivity.handler);
+        msg.sendToTarget();
+    }
+
+    public void sendCahngeStatusToMainThread(){
+        Message msg = Message.obtain();
+        msg.what = DO_UPDATE_SERVER_STATUS_TEXT_VIEW;
         msg.setTarget(MainActivity.handler);
         msg.sendToTarget();
     }

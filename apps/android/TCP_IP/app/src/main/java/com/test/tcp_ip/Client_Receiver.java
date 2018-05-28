@@ -17,6 +17,7 @@ public class Client_Receiver extends Thread {
     public String message;
     public TextView clientTextView;
     public final int DO_UPDATE_CLIENT_TEXT_VIEW = 2;
+    public final int DO_UPDATE_CLIENT_STATUS_TEXT_VIEW = 4;
 
     public Client_Receiver(Socket client_socket, TextView clientTextView){
         this.client_socket = client_socket;
@@ -34,10 +35,12 @@ public class Client_Receiver extends Thread {
                     sendMessageToMainThread(message);
                 }
             } while (!message.contains("q"));
-            client_socket.close();
+            sendCahngeStatusToMainThread();
             sendMessageToMainThread("Klient zamknął socket");
+            client_socket.close();
         } catch (Exception e) {
             try {
+                sendCahngeStatusToMainThread();
                 client_socket.close();
             } catch (Exception e2) {
                 sendMessageToMainThread(e2.getMessage());
@@ -46,11 +49,18 @@ public class Client_Receiver extends Thread {
         }
     }
 
-        public void sendMessageToMainThread(String message){
-            Message msg = Message.obtain();
-            msg.obj = message;
-            msg.what = DO_UPDATE_CLIENT_TEXT_VIEW;
-            msg.setTarget(MainActivity.handler);
-            msg.sendToTarget();
-        }
+    public void sendMessageToMainThread(String message){
+        Message msg = Message.obtain();
+        msg.obj = message;
+        msg.what = DO_UPDATE_CLIENT_TEXT_VIEW;
+        msg.setTarget(MainActivity.handler);
+        msg.sendToTarget();
+    }
+
+    public void sendCahngeStatusToMainThread(){
+        Message msg = Message.obtain();
+        msg.what = DO_UPDATE_CLIENT_STATUS_TEXT_VIEW;
+        msg.setTarget(MainActivity.handler);
+        msg.sendToTarget();
+    }
 }
