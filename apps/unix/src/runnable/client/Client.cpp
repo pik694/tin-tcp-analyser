@@ -34,9 +34,12 @@ void Client::run()
     joinThreads();
 }
 
-Client::Client( std::string host, uint16_t port )
+Client::Client( std::string host, uint16_t port, std::vector< tcp_analyser::utils::system_api::options::TCPOptions_E > options )
     : hostname_( host ),
-      port_( port ) { }
+      port_( port )
+{
+    initOptions(options);
+}
 
 void Client::send()
 {
@@ -46,7 +49,7 @@ void Client::send()
         message = getRandomChar( LETTERS_RANGE, LOWERCASE_LETTER );
         sendSign( message );
     }
-    while( !finish_ && message != LOWER_QUIT );
+    while( !finish_  && message != LOWER_QUIT );
     sendSign( LOWER_QUIT );
     finish_ = true;
 }

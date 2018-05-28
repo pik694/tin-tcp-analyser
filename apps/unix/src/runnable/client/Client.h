@@ -19,7 +19,7 @@ namespace tcp_analyser::runnable::client
     class Client : public Runnable
     {
     public:
-        Client( std::string host, uint16_t port );
+        Client( std::string host, uint16_t port, std::vector< tcp_analyser::utils::system_api::options::TCPOptions_E > );
 
         Client() = delete;
         Client( const Client & ) = delete;

@@ -80,7 +80,7 @@ std::unique_ptr< Runnable > ProgramInitializer::getProgram()
                 if( hostname_.length() == 0 )
                     throw std::invalid_argument( "No hostname specified" );
 
-                return std::make_unique< client::Client >( hostname_, port_ );
+                return std::make_unique< client::Client >( hostname_, port_, TCPOptions_     );
 
             case ExecutionMode_E::SERVER:
                 return std::make_unique< server::Server >( port_, TCPOptions_ );
