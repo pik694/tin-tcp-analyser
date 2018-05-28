@@ -52,7 +52,7 @@ void TCPOption::setOption()
 
 void TCPOption::revertOption()
 {
-    if( std::system( ( option_ + "=" + std::to_string( ENABLE ) ).c_str() ) )
+    if( std::system( ( option_ + "=" + std::to_string( value_ ) ).c_str() ) )
         throw std::runtime_error( "Cannot deinitialize option: " + option_ );
 
     Logger::getInstance()->add( option_ + " reverted to " + std::to_string( value_ ) );
